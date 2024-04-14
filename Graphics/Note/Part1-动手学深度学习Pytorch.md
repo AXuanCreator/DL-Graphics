@@ -1008,7 +1008,7 @@ tensor([2., 2., 2., 2.])"
 
 * 权重W的反向传播过程，最终得到W.grad ：
 
-<img src="动手学深度学习Pytorch.assets/image-20240414201118515.png" alt="image-20240414201118515" style="zoom:67%;" />
+<img src="Part1-动手学深度学习Pytorch.assets/image-20240414201118515.png" alt="image-20240414201118515" style="zoom:67%;" />
 
 
 
@@ -1252,7 +1252,7 @@ tensor([9.5199])
     d2l.plt.show()
     ```
 
-    <img src="动手学深度学习Pytorch.assets/image-20240129134017182.png" alt="image-20240129134017182"  />
+    <img src="Part1-动手学深度学习Pytorch.assets/image-20240129134017182.png" alt="image-20240129134017182"  />
 
 
 
@@ -2412,16 +2412,16 @@ d2l.train_ch3(net, train_iter, test_iter, loss, num_epochs, trainer)
 
 ## 4.1 多层感知机
 
-1.多层感知机：一种架构，由多层全连接层(FC)组合
+### 1.多层感知机：一种架构，由多层全连接层(FC)组合
 
-2.多层感知机架构：
+### 2.多层感知机架构：
 
 * 输入层
 * 输出层
 * 隐藏层：除输入输出层之外的全连接层
 * 层数：隐藏层 + 输出层
 
-3.隐藏表示(Hidden Representation)：当使用$X∈R^{n×d}$表示有n个样本的小批量，每个样本有d个输入特征，对于具有h个隐藏神经元的但隐藏层MLP，用$H∈R^{n×h}$​​来表示隐藏层的输出
+### 3.隐藏表示(Hidden Representation)：当使用$X∈R^{n×d}$表示有n个样本的小批量，每个样本有d个输入特征，对于具有h个隐藏神经元的但隐藏层MLP，用$H∈R^{n×h}$来表示隐藏层的输出
 
 * H：隐藏层标量
 
@@ -2439,14 +2439,14 @@ d2l.train_ch3(net, train_iter, test_iter, loss, num_epochs, trainer)
 
 * 合并隐藏层：$O=(XW^{(1)} + b^{(1)})W^{(2)} + b^{(2)} = XW^{(1)}W^{(2)}+b^{(1)}W^{(2)}+b^{(2)}=XW+b$
 
-4.对于每一次之间的仿射变换，应对每个隐藏单元应用非线性的激活函数σ
+### 4.对于每一次之间的仿射变换，应对每个隐藏单元应用非线性的激活函数σ
 
 * $H=\sigma(XW^{(1)} + b^{(1)})，O=HW^{(2)} + b^{(2)}$
 * 激活函数的输出$\sigma(·)$称之为激活值
 * 当存在激活函数时，MLP将不会退化为线性模型
 * 激活函数不仅可以单独作用于每个神经元，还可以按行的方式操作，即以此计算一个样本。4.给出的公式即为按行操作
 
-5.激活函数
+### 5.激活函数
 
 * ReLU
 
@@ -2466,7 +2466,7 @@ $$
     d2l.plot(X.detach(),X.grad, 'x', 'grad of relu',figsize=(5,2.5))
     ```
 
-    ![image-20240414153439734](动手学深度学习Pytorch.assets/image-20240414153439734.png)
+    ![image-20240414153439734](Part1-动手学深度学习Pytorch.assets/image-20240414153439734.png)
 
 * Sigmoid
     $$
@@ -2491,7 +2491,7 @@ $$
         d2l.plot(X.detach(), Y.detach(), 'x', 'x_sigmoid')
         ```
 
-        <img src="动手学深度学习Pytorch.assets/image-20240414202912480.png" alt="image-20240414202912480" style="zoom:150%;" />
+        <img src="Part1-动手学深度学习Pytorch.assets/image-20240414202912480.png" alt="image-20240414202912480" style="zoom:150%;" />
 
     * Sigmoid的梯度计算：
 
@@ -2502,7 +2502,7 @@ $$
         d2l.plot(X.detach(), X.grad, 'x', 'x_grad', figsize=(10, 5))
         ```
 
-        ![image-20240414203514123](动手学深度学习Pytorch.assets/image-20240414203514123.png)
+        ![image-20240414203514123](Part1-动手学深度学习Pytorch.assets/image-20240414203514123.png)
 
 * tanh
     $$
@@ -2530,9 +2530,9 @@ $$
         d2l.plot(X.detach(), X.grad, 'x', 'x_grad', figsize=(10, 5))
         ```
 
-        ![image-20240414204051216](动手学深度学习Pytorch.assets/image-20240414204051216.png)
+        ![image-20240414204051216](Part1-动手学深度学习Pytorch.assets/image-20240414204051216.png)
 
-        ![image-20240414204031960](动手学深度学习Pytorch.assets/image-20240414204031960.png)
+        ![image-20240414204031960](Part1-动手学深度学习Pytorch.assets/image-20240414204031960.png)
 
 
 ​		
