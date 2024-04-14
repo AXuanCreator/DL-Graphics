@@ -830,21 +830,39 @@ tensor(3.4641)
 
 * 简化理解，只需对特定变量求导，其余变量看作常量
 
+* 矩阵求导重要公式
+
+   $$
+   \text 带T对不带T求导：左右互换位置不加T \\
+   \frac{\partial(A^TW^TB)}{\partial(W)} = BA^T \\ \\
+   \text 都不带T求导：不互换位置加T \\
+   \frac{\partial(A^TWB)}{\partial(W)} = AB^T
+   $$
+   
+   
+
+
 ### 4.梯度(Gradient)：通过连接一个多元函数对其所有变量的偏导数而得到梯度向量
 
 * 数学表达(向量x的梯度)：$\nabla_x f = [\frac{\partial f}{\partial x_1}, \frac{\partial f}{\partial x_2}, \ldots, \frac{\partial f}{\partial x_n}]^T$，其中，一般情况下$\nabla_x$可被$\nabla$替代
+
 * 设x为n维向量，A为矩阵，有以下常用规则：
     * 对于所有$A∈R^{m×n}$，存在$\nabla_xAx=A^T$
     * 对于所有$A∈R^{n×m}$，存在$\nabla_xx^TA=A$
     * 对于所有$A∈R^{n×n}$，存在$\nabla_xx^TAx=(A+A^T)x$
-    * $\nabla_x||x||^2=\nabla_xx^Tx=2x$。$||x||^2$表示L2范数的平方，即向量x所有元素的平方和
+    * $\nabla_x||x||^2=\nabla_xx^Tx=2x$。$||x||^2$​​表示L2范数的平方，即向量x所有元素的平方和
+    
+    
+    
+      
+    
+      
+    
 
 ### 5.链式法则：有时候，多元函数可能是复合的，即函数y有变量u，而u实际上也是个函数，里面有变量x，此时可以通过链式法则来求微分
 
 * 数学表达：$\frac{dy}{dx} = \frac{dy}{dg} \cdot \frac{dg}{dx}$
 * 若可微函数y存在$u_1,u_2,...,u_m$，而每个变量u都存在变量$x_1,x_2,...,x_n$。对于任意i=1,2,3,...,n，由链式法则可得到公式：$\frac{\partial y}{\partial x_i} = \frac{\partial y}{\partial u_1} \cdot \frac{\partial u_1}{\partial x_i} + \frac{\partial y}{\partial u_2} \cdot \frac{\partial u_2}{\partial x_i} + \ldots + \frac{\partial y}{\partial u_m} \cdot \frac{\partial u_m}{\partial x_i}$
-
-
 
 
 
@@ -959,6 +977,38 @@ tensor([2., 2., 2., 2.])"
 
 
 ```
+
+
+
+### 6.线性模型反向传播的计算过程
+
+* 条件 : 线性模型为Y=WX+B
+
+    ```python
+    X = torch.tensor([[1.0, 2.0], [2.0, 3.0], [3.0, 4.0]])
+    y_true = torch.tensor([[3.0], [4.0], [5.0]])
+    
+    # 初始化模型参数
+    W = torch.randn(2, 1, requires_grad=True)
+    b = torch.randn(1, requires_grad=True)
+    
+    # 定义模型
+    def model(X, W, b):
+    	return torch.matmul(X, W) + b
+    
+    # 计算预测值
+    y_pred = model(X, W, b)
+    
+    # 计算损失函数（均方误差）
+    loss = torch.mean((y_pred - y_true) ** 2)
+    
+    # 反向传播
+    loss.backward()
+    ```
+
+* 权重W的反向传播过程，最终得到W.grad ：
+
+<img src="动手学深度学习Pytorch.assets/image-20240414201118515.png" alt="image-20240414201118515" style="zoom:67%;" />
 
 
 
@@ -2396,5 +2446,94 @@ d2l.train_ch3(net, train_iter, test_iter, loss, num_epochs, trainer)
 * 当存在激活函数时，MLP将不会退化为线性模型
 * 激活函数不仅可以单独作用于每个神经元，还可以按行的方式操作，即以此计算一个样本。4.给出的公式即为按行操作
 
-​    
+5.激活函数
+
+* ReLU
+
+$$
+ReLU(x) = max(x,0)
+$$
+
+
+* 在Pytorch中使用`torch.relu(x)`进行操作
+
+    * 在 x>0 时，其导数 y' = 1
+
+    ```
+    X = torch.arange(-8.0, 8.0, 0.1, requires_grad=True)
+    Y = torch.relu(X)
+    Y.backward(torch.ones_like(X), retain_graph=True)
+    d2l.plot(X.detach(),X.grad, 'x', 'grad of relu',figsize=(5,2.5))
+    ```
+
+    ![image-20240414153439734](动手学深度学习Pytorch.assets/image-20240414153439734.png)
+
+* Sigmoid
+    $$
+    Sigmoid(x)=\frac{1}{1-exp(-x)}
+    $$
+
+    * 通过Sigmoid，值将被限制在 [0,1]。但与Softmax不同，Sigmoid并不会把所有值之和限制为1
+
+    * Sigmoid的导数 : 
+        $$
+        \frac{dSigmoid(x)}{dx}=\frac{exp(-x)}{(1+exp(-x))^2}=Sigmoid(x)(1-Sigmoid(x))
+        $$
+
+        * 当x=0时，导数达到最大值0.25。当x越远离0，导数越趋向于0
+
+    * Pytorch：
+
+        ```python
+        X = torch.arange(-5.0, 5.0, 0.5, requires_grad=True)
+        Y = torch.sigmoid(X)
+        print(Y)
+        d2l.plot(X.detach(), Y.detach(), 'x', 'x_sigmoid')
+        ```
+
+        <img src="动手学深度学习Pytorch.assets/image-20240414202912480.png" alt="image-20240414202912480" style="zoom:150%;" />
+
+    * Sigmoid的梯度计算：
+
+        ```python
+        X = torch.arange(-5.0, 5.0, 0.5, requires_grad=True)
+        Y = torch.sigmoid(X)
+        Y.sum().backward()
+        d2l.plot(X.detach(), X.grad, 'x', 'x_grad', figsize=(10, 5))
+        ```
+
+        ![image-20240414203514123](动手学深度学习Pytorch.assets/image-20240414203514123.png)
+
+* tanh
+    $$
+    tanh(x)=\frac{1-exp(-2x)}{1+exp(-2x)}
+    $$
+
+
+    * 通过tanh函数，值将会被限制为[-1,1]
+
+    * tanh的导数 : 
+        $$
+        \frac{dtanh(x)}{dx} =1-tanh^2(x)
+        $$
+
+
+        * 当输入x越接近0，其导数越接近最大值1。越远离0，其导数越趋向于0
+
+    * 代码：
+
+        ```python
+        X = torch.arange(-5.0, 5.0, 0.5, requires_grad=True)
+        Y = torch.tanh(X)
+        Y.sum().backward()
+        d2l.plot(X.detach(),Y.detach(),'x','tanh(x)',figsize=(10,5))
+        d2l.plot(X.detach(), X.grad, 'x', 'x_grad', figsize=(10, 5))
+        ```
+
+        ![image-20240414204051216](动手学深度学习Pytorch.assets/image-20240414204051216.png)
+
+        ![image-20240414204031960](动手学深度学习Pytorch.assets/image-20240414204031960.png)
+
+
+​		
 
