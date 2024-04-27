@@ -42,13 +42,66 @@ sudo rm -rf /usr/local/cuda-xx.x
 
 ## CUDA安装
 
+
+
+### CUDA 11.3
+
+#### Ubuntu 20.04
+
+```bash
+# Runfile
+wget https://developer.download.nvidia.com/compute/cuda/11.3.0/local_installers/cuda_11.3.0_465.19.01_linux.run
+
+sudo sh cuda_11.3.0_465.19.01_linux.run
+```
+
+```bash
+# lib64软链接
+sudo ln -s /usr/local/cuda-11.3/targets/x86_64-linux/lib/ /usr/local/cuda-11.3/lib64
+
+export PATH=/usr/local/cuda-11.3/bin:$PATH
+
+export LD_LIBRARY_PATH=/usr/local/cuda-11.6/lib64:$LD_LIBRARY_PATH
+
+export CUDA_HOME=/usr/local/cuda-11.3
+```
+
+
+
+
+
+### CUDA 11.4
+
+#### Ubuntu 20.04
+
+```bash
+# Runfile
+wget https://developer.download.nvidia.com/compute/cuda/11.4.0/local_installers/cuda_11.4.0_470.42.01_linux.run
+
+sudo sh cuda_11.4.0_470.42.01_linux.run
+```
+
+```bash
+# lib64软链接
+sudo ln -s /usr/local/cuda-11.4/targets/x86_64-linux/lib/ /usr/local/cuda-11.4/lib64
+
+export PATH=/usr/local/cuda-11.4/bin:$PATH
+
+export LD_LIBRARY_PATH=/usr/local/cuda-11.4/lib64:$LD_LIBRARY_PATH
+
+export CUDA_HOME=/usr/local/cuda-11.4
+```
+
+
+
+
+
 ### CUDA 11.6
 
 #### Ubuntu 20.04
 
-##### runfile
-
 ```bash
+# Runfile
 wget https://developer.download.nvidia.com/compute/cuda/11.6.0/local_installers/cuda_11.6.0_510.39.01_linux.run
 
 sudo sh cuda_11.6.0_510.39.01_linux.run
@@ -94,6 +147,7 @@ sudo apt-get -y install cuda
 
 ```bash
 wget https://developer.download.nvidia.com/compute/cuda/11.8.0/local_installers/cuda_11.8.0_520.61.05_linux.run
+
 sudo sh cuda_11.8.0_520.61.05_linux.run
 ```
 

@@ -2446,6 +2446,8 @@ d2l.train_ch3(net, train_iter, test_iter, loss, num_epochs, trainer)
 * 当存在激活函数时，MLP将不会退化为线性模型
 * 激活函数不仅可以单独作用于每个神经元，还可以按行的方式操作，即以此计算一个样本。4.给出的公式即为按行操作
 
+
+
 ### 5.激活函数
 
 * ReLU
@@ -2504,36 +2506,169 @@ $$
 
         ![image-20240414203514123](Part1-动手学深度学习Pytorch.assets/image-20240414203514123.png)
 
+
 * tanh
+
     $$
     tanh(x)=\frac{1-exp(-2x)}{1+exp(-2x)}
     $$
-
-
+    
     * 通过tanh函数，值将会被限制为[-1,1]
-
+    
+    
     * tanh的导数 : 
         $$
         \frac{dtanh(x)}{dx} =1-tanh^2(x)
         $$
-
-
+        
         * 当输入x越接近0，其导数越接近最大值1。越远离0，其导数越趋向于0
-
+    
     * 代码：
 
-        ```python
-        X = torch.arange(-5.0, 5.0, 0.5, requires_grad=True)
-        Y = torch.tanh(X)
-        Y.sum().backward()
-        d2l.plot(X.detach(),Y.detach(),'x','tanh(x)',figsize=(10,5))
-        d2l.plot(X.detach(), X.grad, 'x', 'x_grad', figsize=(10, 5))
-        ```
+~~~python
+X = torch.arange(-5.0, 5.0, 0.5, requires_grad=True)
+Y = torch.tanh(X)
+Y.sum().backward()
+d2l.plot(X.detach(),Y.detach(),'x','tanh(x)',figsize=(10,5))
+d2l.plot(X.detach(), X.grad, 'x', 'x_grad', figsize=(10, 5))
+~~~
 
-        ![image-20240414204051216](Part1-动手学深度学习Pytorch.assets/image-20240414204051216.png)
+<img src="Part1-动手学深度学习Pytorch.assets/image-20240414204051216.png" alt="image-20240414204051216" style="zoom:80%;" />
 
-        ![image-20240414204031960](Part1-动手学深度学习Pytorch.assets/image-20240414204031960.png)
+<img src="Part1-动手学深度学习Pytorch.assets/image-20240414204031960.png" alt="image-20240414204031960" style="zoom:80%;" />
+
 
 
 ​		
 
+## 4.2 多层感知机从零开始实现
+
+### 1.初始化
+
+```python
+import torch
+from torch import nn
+from d2l import torch as d2l
+
+batch_size = 256
+train_iter, test_iter = d2l.load_data_fashion_mnist(batch_size)
+```
+
+
+
+### 2.初始化模型参数
+
+```python
+num_inputs, num_outputs, num_hiddens = 784, 10, 256
+
+W1 = nn.Parameter(torch.randn(num_inputs, num_hiddens, requires_grad=True) * 0.01)
+b1 = nn.Parameter(torch.zeros(num_hiddens, requires_grad=True))
+W2 = nn.Parameter(torch.randn(num_hiddens, num_outputs, requires_grad=True) * 0.01)
+b2 = nn.Parameter(torch.zeros(num_outputs, requires_grad=True))
+
+params = [W1, b1, W2, b2]
+```
+
+
+
+### 3.激活函数
+
+```python
+def relu(X):
+    a = torch.zeros_like(X)
+    return torch.max(X, a)
+```
+
+
+
+### 4.模型
+
+```python
+def net(X):
+    X = X.reshape((-1, num_inputs))  # 展平为向量
+    H = relu(X @ W1 + b1)  # @代表矩阵相乘，相当于torch.matmul
+    return H @ W2 + b2
+```
+
+
+
+### 5.损失函数
+
+```
+loss = nn.CrossEntropyLoss() # 交叉熵损失函数
+```
+
+
+
+### 6.训练
+
+```python
+num_epochs, lr = 10, 0.1
+updater = torch.optim.SGD(params, lr=lr)
+d2l.train_ch3(net, train_iter, test_iter, loss, num_epochs, updater)
+```
+
+
+
+### 7.预测
+
+```python
+d2l.predict_ch3(net, test_iter)
+```
+
+
+
+
+
+## 4.3 多层感知机的简洁实现
+
+### 代码
+
+```python
+import torch
+from torch import nn
+from d2l import torch as d2l
+
+net = nn.Sequential(nn.Flatten(), nn.Linear(784, 256), nn.ReLU(),nn.Linear(256, 10))
+
+def init_weights(m):
+    if type(m) == nn.Linear:
+        nn.init.normal_(m.weight, std=0.01)
+        
+net.apply(init_weights);
+
+batch_size, lr, num_epochs = 256, 0.1, 10
+loss = nn.CrossEntropyLoss(reduction='None')
+trainer = torch.optim.SGD(net.parameters(), lr=lr)
+
+train_iter, test_iter = d2l.load_data_fashion_mnist(batch_size)
+d2l.train_ch3(net, train_iter, test_iter, loss, num_epochs, trainer)
+```
+
+
+
+
+
+## 4.4 模型选择、欠拟合和过拟合
+
+1.过拟合(Overfitting)：模型在训练集上表现良好，但在新的数据上表现不佳
+
+2.正则化(Regularizatin)：对抗过拟合的方法
+
+3.训练误差(Training Error)：模型在训练集上计算得到的误差
+
+4.泛化误差(Generalization Error)：模型在面对未见过的数据时的误差
+
+5.独立同分布假设：训练数据和测试数据均从相同的分布中抽取，任一抽取的两者相关性均不会相对较强
+
+6.影响模型泛化的因素：
+
+* 可调整参数的数量：当自由度越大时，越容易过拟合
+* 参数的取值：当权重取值范围较大时，容易过拟合
+* 训练样本的数量
+
+7.K折交叉验证：将训练数据分成K个不重叠的子集，每次在K-1个子集上进行训练，并在剩余的子集上进行验证，最后通过对K次实验的结果取平均值来估计训练误差和验证误差
+
+8.欠拟合(Underfitting)：模型在训练数据上无法很好地拟合真实数据的一般性模式，表现为模型在训练数据和测试数据上的性能都不佳。简单来说，欠拟合表示模型过于简单，无法捕获数据中的复杂关系。
+
+9.
