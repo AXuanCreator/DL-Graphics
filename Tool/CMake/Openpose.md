@@ -24,6 +24,8 @@ cmake --version
 
 * Cmake-3.21.3
 
+**更推荐在DockerFile里面配置cmake**
+
 1. 下载Cmake的Source压缩包
 
     ```
@@ -98,6 +100,8 @@ pkg-config --modversion opencv
 ## 无Root权限
 
 * Opencv-3.4.9
+
+**更推荐在DockerFile里面配置opencv**
 
 1. 下载Opencv与Opencv-Contrib
 
@@ -259,10 +263,12 @@ https://pan.baidu.com/s/1Xt-gxruQLFmTMLzQd0MRNw  # OpenCV-Contrib  Password : ly
 
 4. 链接python(可选)
 
+    * 注意：只会在
+
     ```
     cd python
     
-    make -j 'nproc'
+    make -j `nproc`
     
     sudo make install
     ```
