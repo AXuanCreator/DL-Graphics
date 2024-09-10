@@ -16,3 +16,5 @@ sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/g++-x 100  # 设置
 sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/g++-X 50  # 低优先级
 ```
 
+
+

@@ -377,7 +377,7 @@ True
 * torch.tensor()：转换为Pytorch的tensor
 * item()：转为python的基本类型，也可用int(),float()。只可对大小为1的张量使用
 
-```
+```python
 # PROGRAM
 X = torch.tensor([1])
 A = X.numpy()

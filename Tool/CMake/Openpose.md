@@ -161,58 +161,7 @@ pkg-config --modversion opencv
     pkg-config --modversion opencv
     ```
 
-## 问题
 
-### 无法找到一些文件：
-
-```
-/liuxianguo1/XYX/Others/opencv_contrib-3.4.9/modules/xfeatures2d/src/vgg.cpp:490:20: fatal error: vgg_generated_120.i: No such file or directory
-  490 |           #include "vgg_generated_120.i"
-      |                    ^~~~~~~~~~~~~~~~~~~~~
-compilation terminated.
-make[2]: *** [modules/xfeatures2d/CMakeFiles/opencv_xfeatures2d.dir/build.make:354: modules/xfeatures2d/CMakeFiles/opencv_xfeatures2d.dir/src/vgg.cpp.o] Error 1
-make[2]: *** Waiting for unfinished jobs....
-[ 88%] Building CXX object modules/ximgproc/CMakeFiles/opencv_ximgproc.dir/src/ridgedetectionfilter.cpp.o
-/liuxianguo1/XYX/Others/opencv_contrib-3.4.9/modules/xfeatures2d/src/boostdesc.cpp:654:20: fatal error: boostdesc_bgm.i: No such file or directory
-  654 |           #include "boostdesc_bgm.i"
-      |                    ^~~~~~~~~~~~~~~~~
-```
-
-方案：
-
-```
-# 下载配置文件.zip
-https://pan.baidu.com/s/1Xt-gxruQLFmTMLzQd0MRNw  # OpenCV-Contrib  Password : lyh1
-
-将其放置在 opencv_contrib/modules/xfeatures2d/src/
-```
-
-### Include不到文件
-
-```
-/liuxianguo1/XYX/Others/opencv-3.4.9/modules/stitching/include/opencv2/stitching/detail/matchers.hpp:52:12: fatal error: opencv2/xfeatures2d/cuda.hpp: No such file or directory
-   52 | #  include "opencv2/xfeatures2d/cuda.hpp"
-   
-   /liuxianguo1/XYX/Others/opencv-3.4.9/modules/stitching/src/precomp.hpp:91:12: fatal error: opencv2/xfeatures2d/cuda.hpp: No such file or directory
-   91 | #  include "opencv2/xfeatures2d/cuda.hpp"
-   
-   /liuxianguo1/XYX/Others/opencv-3.4.9/modules/stitching/src/matchers.cpp:52:10: fatal error: opencv2/xfeatures2d.hpp: No such file or directory
-   52 | #include "opencv2/xfeatures2d.hpp"
-      |          ^~~~~~~~~~~~~~~~~~~~~~~~~
-      
-      /liuxianguo1/XYX/Others/opencv_contrib-3.4.9/modules/xfeatures2d/include/opencv2/xfeatures2d.hpp:42:10: fatal error: opencv2/xfeatures2d.hpp: No such file or directory
-   42 | #include "opencv2/xfeatures2d.hpp"
-```
-
-解决方案：
-
-将路径换位绝对路径，缺少的文件基本都在`/liuxianguo1/XYX/Others/opencv_contrib-3.4.9/modules/xfeatures2d/include/opencv2/`
-
-```
-# 例子
-#include"/opencv2/xfeatures2d.hpp"  ==>  
-#include"/liuxianguo1/XYX/Others/opencv_contrib-3.4.9/modules/xfeatures2d/include/opencv2/xfeatures2d.hpp"
-```
 
 
 
@@ -277,7 +226,76 @@ https://pan.baidu.com/s/1Xt-gxruQLFmTMLzQd0MRNw  # OpenCV-Contrib  Password : ly
 
 
 
+## 问题
 
+### 无法找到一些文件：
+
+```
+/liuxianguo1/XYX/Others/opencv_contrib-3.4.9/modules/xfeatures2d/src/vgg.cpp:490:20: fatal error: vgg_generated_120.i: No such file or directory
+  490 |           #include "vgg_generated_120.i"
+      |                    ^~~~~~~~~~~~~~~~~~~~~
+compilation terminated.
+make[2]: *** [modules/xfeatures2d/CMakeFiles/opencv_xfeatures2d.dir/build.make:354: modules/xfeatures2d/CMakeFiles/opencv_xfeatures2d.dir/src/vgg.cpp.o] Error 1
+make[2]: *** Waiting for unfinished jobs....
+[ 88%] Building CXX object modules/ximgproc/CMakeFiles/opencv_ximgproc.dir/src/ridgedetectionfilter.cpp.o
+/liuxianguo1/XYX/Others/opencv_contrib-3.4.9/modules/xfeatures2d/src/boostdesc.cpp:654:20: fatal error: boostdesc_bgm.i: No such file or directory
+  654 |           #include "boostdesc_bgm.i"
+      |                    ^~~~~~~~~~~~~~~~~
+```
+
+方案：
+
+```
+# 下载配置文件.zip
+https://pan.baidu.com/s/1Xt-gxruQLFmTMLzQd0MRNw  # OpenCV-Contrib  Password : lyh1
+
+将其放置在 opencv_contrib/modules/xfeatures2d/src/
+```
+
+### Include不到文件
+
+```
+/liuxianguo1/XYX/Others/opencv-3.4.9/modules/stitching/include/opencv2/stitching/detail/matchers.hpp:52:12: fatal error: opencv2/xfeatures2d/cuda.hpp: No such file or directory
+   52 | #  include "opencv2/xfeatures2d/cuda.hpp"
+   
+   /liuxianguo1/XYX/Others/opencv-3.4.9/modules/stitching/src/precomp.hpp:91:12: fatal error: opencv2/xfeatures2d/cuda.hpp: No such file or directory
+   91 | #  include "opencv2/xfeatures2d/cuda.hpp"
+   
+   /liuxianguo1/XYX/Others/opencv-3.4.9/modules/stitching/src/matchers.cpp:52:10: fatal error: opencv2/xfeatures2d.hpp: No such file or directory
+   52 | #include "opencv2/xfeatures2d.hpp"
+      |          ^~~~~~~~~~~~~~~~~~~~~~~~~
+      
+      /liuxianguo1/XYX/Others/opencv_contrib-3.4.9/modules/xfeatures2d/include/opencv2/xfeatures2d.hpp:42:10: fatal error: opencv2/xfeatures2d.hpp: No such file or directory
+   42 | #include "opencv2/xfeatures2d.hpp"
+```
+
+解决方案：
+
+将路径换位绝对路径，缺少的文件基本都在`/liuxianguo1/XYX/Others/opencv_contrib-3.4.9/modules/xfeatures2d/include/opencv2/`
+
+```
+# 例子
+#include"/opencv2/xfeatures2d.hpp"  ==>  
+#include"/liuxianguo1/XYX/Others/opencv_contrib-3.4.9/modules/xfeatures2d/include/opencv2/xfeatures2d.hpp"
+```
+
+
+
+## make[1] : error
+
+如果遇到类似以下的输出
+
+```bash
+make[2]: *** [python/openpose/CMakeFiles/pyopenpose.dir/build.make:63: python/openpose/CMakeFiles/pyopenpose.dir/openpose_python.cpp.o] Error 1
+make[1]: *** [CMakeFiles/Makefile2:1924: python/openpose/CMakeFiles/pyopenpose.dir/all] Error 2
+make[1]: *** Waiting for unfinished jobs....
+```
+
+可以尝试重复运行
+
+```cmd
+make -j `nproc`
+```
 
 
 
@@ -292,6 +310,7 @@ https://pan.baidu.com/s/1Xt-gxruQLFmTMLzQd0MRNw  # OpenCV-Contrib  Password : ly
 3. [Linux无root权限安装opencv_opencv3.4.1安装 linux-CSDN博客](https://blog.csdn.net/qq_42921511/article/details/120611683)
 4. [opencv_contrib 下载驿站（百度云盘下载）_opencv_contrib-3.4.4.tar.gz-CSDN博客](https://blog.csdn.net/weijifen000/article/details/87904707)
 5. [ubuntu下命令行安装openpose并使用python调用_openpose ubuntu-CSDN博客](https://blog.csdn.net/qq_41491230/article/details/127906256#:~:text=步骤如下： 1. 获取 openpose git clone https%3A%2F%2Fgithub.com%2FCMU-Perceptual-Computing-Lab%2Fopenpose.git,2. 安装cmake apt install cmake build-essential 3.进入openpose%2C建立build文件夹并使用cmake编译，注意设置参数-DBUILD_PYTHON%3DON后续才可以使用python调用。)
+6. [解决：libp11-kit.so.0: undefined symbol: ffi_type_pointer, version LIBFFI_BASE_7.0](https://blog.csdn.net/qq_38606680/article/details/129118491)
 
 
 
